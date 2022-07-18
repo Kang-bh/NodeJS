@@ -17,3 +17,4 @@ readStream.on('error', () => {
 }) // readStream 또한 에러처림 왜냐? 비동기이기에
 
 // Stream의 경우 메모리를 아낄 수 있다. 메모리 관련에서 효율적
+// 이벤트리스너 : data, end
