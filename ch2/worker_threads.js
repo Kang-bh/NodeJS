@@ -1,7 +1,6 @@
 const { Worker, isMainThread, parentPort } = require('worker_threads');
 
 if (isMainThread) { // 메인 스레드
-    const threads = new Set();
     const worker = new Worker(__filename);
     worker.on('message', (value) => console.log('워커로부터', value));
     worker.on('exit', ()=> console.log('워커 끝'));
