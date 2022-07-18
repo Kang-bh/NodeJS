@@ -8,4 +8,4 @@ const buffer2 = Buffer.concat(array);
 console.log('concat():', buffer2.toString());
 
 const buffer3 = Buffer.alloc(5);
-console.log('alloc():', buffer3);
+console.log('alloc():', buffer3); // 5byte 짜리 버퍼 생성
