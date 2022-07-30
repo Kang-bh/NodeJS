@@ -23,23 +23,21 @@ http.createServer(async (req, res) => {
         const { query } = url.parse(req.url);
         const { name } = qs.parse(query); // query string에서 name 추출
         const expires = new Date();
-        expires.setMinutes(expires.getMinutes() + 5); // 5분 후 쿠키 만료 
+        expires.setMinutes(expires.getMinutes() + 5); // 5분 후 쿠키 만료
         const uniqueInt = Date.now(); // key 안 겹치게
-        session[uniqueInt] = {
-            name,
-            expires,
-        };
+    
+        
         res.writeHead(302, { // 302: redirection Location으로 돌려보내라.
             Location: '/', 
-            'Set-Cookie': `session=${uniqueInt}; Expires=${expires.toGMTString()}; HttpOnly; Path=/`,
+            'Set-Cookie': `name=${encodeURIComponent(name)}; Expires = ${expires.toGMTString()}; HttpOnly; Path=/`,
             // HttpOnly : javascript로 접근 못하게. 로그인에서 필수 (보안)
             // Path=/ : / 밑으로 cookie 전부 사용 가능
         });
         res.end();
-    } else if (cookies.session && session[cookies.session].expires > new Date()) {
+    } else if (cookies.name) {
         // 세션쿠키 존재 + 만료 기간 지나지 않은 경우
         res.writeHead(200, {'Content-Type' : 'text/plain; charset=utf-8' });
-        res.end(`${session[cookies.session].name}님 안녕하세요`);
+        res.end(`${cookies.name}님 안녕하세요`);
     } else {
         try { 
             const data = await fs.readFile('./cookie2.html');
