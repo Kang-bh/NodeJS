@@ -16,6 +16,6 @@ https.createServer({
     res.write('<h1>hello Node!</h1>');
     res.end('<p>Hello Server!</p>');
 })
-    .listen(443, () => {
+    .listen(443, () => { // https : 443 생략 가능
         console.log('443번 포트에서 서버 대기 중');
     });
