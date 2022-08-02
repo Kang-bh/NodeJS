@@ -9,23 +9,38 @@ app.set('port', process.env.PORT || 3000); // 서버에 속성 부여 = 전역 �
 app.use((req, res, next) => {
     console.log('모든 요청에 실행');
     next();
-}, (req, res) => {
-    throw new Error();
+}, (req, res, next) => {
+    try{
+        console.log(asdfasdf);
+    } catch (error) {
+        next(error); 
+    // next에 인수가 들어가면 error처리 미들웨어로
+    }
+    
 });
 
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'index.html'));
+    if (true) { // 분기를 이용해 어디를 읽을 지 알 수 있음.
+        next('route');
+    } else {
+        next();
+    } // 다음 router 실행
     // res.send('안녕하세요);
     // res.json({name : 'hi});
     // 에러 발생 요청 한번에 한 번 응답
     // res.writeHead() 응답 보내고 head x
 
     // http 사용시
-    // res.writeHead(200, {'Content-Type' : 'text/plain'';} );
+    // res.writeHead(200, {'Content-Type' : 'text/plain''});
     // res.end('안녕하세요;)
 
     // express 사용시
     // res.status(200).send('안녕하세요');
+
+    //res.json() 은 return 값이 아니다. 그래서 밑에 것 실행
+}, (req, res) => {
+    console.log('false 면 실행');
 });
 
 app.post('/', (req, res) => {
