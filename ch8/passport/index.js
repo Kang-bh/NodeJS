@@ -12,7 +12,7 @@ module.exports = () => {
     // { id: 3, 'connect.sid' : s%3189203810391280}
 
     passport.deserializeUser((id, done) => { // 가벼운 정보로 전체 정보 복구
-        User.findAOne({ where: { id }})
+        User.findOne({ where: { id }})
             .then(user => done(null, user))
             .catch(err => done(err));
     });

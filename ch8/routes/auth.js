@@ -53,8 +53,10 @@ router.get('/logout', isLoggedIn, (req, res) => {
 });
 
 router.get('/kakao', passport.authenticate('kakao'));
+// 카카오 홈페이지 => 로그인 => 카카오에서 /kakao/callback 요청을 보냄
 
-router.get('/kakao/callback', passport.auathenticate('kakao', {
+
+router.get('/kakao/callback', passport.authenticate('kakao', {
     failureRedirect: '/',
 }), (req, res) => {
     res.redirect('/');
