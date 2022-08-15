@@ -4,11 +4,15 @@ const morgan = require('morgan');
 const path = require('path');
 const nunjucks = require('nunjucks');
 const session = require('express-session');
+const passport = require('passport');
 const dotenv = require('dotenv');
 
 dotenv.config();
 const pageRouter = require('./routes/page');
+const authRouter = require('./routes/auth');
+const postRouter = require('./routes/post');
 const { sequelize } = require('./models');
+const passportConfig = require('./passport');
 
 const app = express();
 app.set('port', process.env.PORT || 8001); // 개발시와 배포시 PORT 다르게
@@ -24,9 +28,12 @@ sequelize.sync({ force: false})
     .catch((err) => {
         console.error(err);
     });
+passportConfig();
+
 
 app.use(morgan('dev')); // 개발환경
 app.use(express.static(path.join(__dirname, 'public'))); // express에서 정적 파일 제공
+app.use('/img', express.static(path.join(__dirname, 'uploads')));
 app.use(express.json()); // json 패이로드 요청 받기
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser(process.env.COOKIE_SECRET));
@@ -40,7 +47,12 @@ app.use(session({
     },
 }));
 
+app.use(passport.initialize());
+app.use(passport.session());
+
 app.use('/', pageRouter);
+app.use('/auth', authRouter);
+app.use('/post', postRouter);
 
 app.use((req, res, next) => { // 404 처리 미들웨어
     const error = new Error(`${req.method} ${req.url} 라우터가 없습니다.` );
