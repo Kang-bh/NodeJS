@@ -45,7 +45,7 @@ router.post('/token', async (req, res) =>{
 )
 
 router.get('/test', verifyToken, (req, res) => {
-    res.json(req.decoded);
+    res.json(res.locals.decoded);
 })
 
 
