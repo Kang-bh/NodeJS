@@ -10,6 +10,7 @@ const dotenv = require('dotenv');
 dotenv.config();
 const authRouter = require('./routes/auth');
 const indexRouter = require('./routes');
+const v1 = require('./routes/v1');
 const { sequelize } = require('./models');
 const passportConfig = require('./passport');
 const { log } = require('console');
@@ -23,7 +24,7 @@ nunjucks.configure('views', {
     watch: true,
 })
 
-sequelize.sync({ force: true })
+sequelize.sync({ force: false })
     .then(() => {
         console.log('DB 연결 성공');
     })
@@ -33,6 +34,7 @@ sequelize.sync({ force: true })
 
 app.use(morgan('dev'));
 app.use(express.static(path.join(__dirname, 'public')));
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser(process.env.COOKIE_SECRET));
@@ -50,6 +52,7 @@ app.use(passport.session());
 
 app.use('/auth', authRouter);
 app.use('/', indexRouter);
+app.use('/v1', v1);
 
 app.use((req, res, next) => {
     const error = new Error(`${req.method} ${req,url} 라우터가 없습니다.`);
