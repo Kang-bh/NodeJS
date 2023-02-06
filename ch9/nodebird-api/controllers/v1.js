@@ -1,7 +1,7 @@
 const jwt = require('jsonwebtoken');
-const { Domain, User } = require('../models');
+const { Domain, User, Post, Hashtag } = require('../models');
 
-exports.createToken = async(req, res) => {
+const createToken = async(req, res) => {
     const { clientSecret } = req.body
 
     try { 
@@ -42,6 +42,64 @@ exports.createToken = async(req, res) => {
     }
 }
 
-exports.tokenTest = (req, res) => {
+const tokenTest = (req, res) => {
     res.json(res.locals.decoded)
+}
+
+const getMyPosts = (req, res) => {
+    console.log(1);
+    Post.findAll({
+        where : {
+            userId : res.locals.decoded.id
+        }
+    })
+    .then((posts) => {
+        console.log(posts);
+
+        res.json({
+            code : 200,
+            payload : posts,
+        })
+    })
+    .catch((error) => {
+        console.error(error);
+        return res.statud(500).json({
+            code : 500,
+            message : '서버 에러'
+        })
+    })
+}
+
+const getPostsByHashtag = async (req, res) => {
+    try {
+        const hashtag = await Hashtag.findOne({ where : {title : req.params.title }});
+
+        console.log(hashtag);
+
+        if(!hashtag) {
+            return res.status(404).json({
+                code : 404,
+                message : '검색 결과가 존재하지 않습니다.'
+            })
+        }
+
+        const posts = await hashtag.getPosts();
+        return res.json({
+            code : 200,
+            payload : posts
+        })
+    } catch(error) {
+        console.error(error);
+        return res.status(500).json({
+            code : 500,
+            message : '서버 에러'
+        })
+    }
+}
+
+module.exports = {
+    getMyPosts,
+    getPostsByHashtag,
+    createToken,
+    tokenTest
 }
