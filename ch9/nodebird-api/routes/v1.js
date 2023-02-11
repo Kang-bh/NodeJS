@@ -1,10 +1,13 @@
 const express = require('express');
 const jwt = require('jsonwebtoken');
 
-const { verifyToken } = require('./middlewares');
+const { verifyToken, deprecated } = require('./middlewares');
 const { createToken, tokenTest, getMyPosts, getPostsByHashtag } = require('../controllers/v1')
 
+// 공통되면
 const router = express.Router();
+
+router.use(deprecated)
 
 router.post('/token', createToken)
 
