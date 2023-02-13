@@ -29,7 +29,7 @@ describe('addFollowing', () => {
     
     test('사용자가 없어서 404 error를 보내고 no user라고 클라이언트에게 메시지를 보냄', async() => {
         User.findOne.mockReturnValue(Promise.resolve(null)); 
-        await addFollowing(req, res, next);
+        await addFollowing(req, res, next); 
         expect(res.status).toBeCalledWith(404);
         expect(res.send).toBeCalledWith('no user');
     })

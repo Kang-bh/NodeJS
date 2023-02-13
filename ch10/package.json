@@ -2,16 +2,18 @@
   "name": "nodebird",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "server.js",
   "scripts": {
-    "start": "nodemon app",
-    "test": "jest"
+    "start": "nodemon server",
+    "test": "jest",
+    "coverage": "jest --coverage"
   },
   "author": "kang",
   "license": "MIT",
   "devDependencies": {
     "jest": "^29.4.2",
-    "nodemon": "^2.0.19"
+    "nodemon": "^2.0.19",
+    "supertest": "^6.3.3"
   },
   "dependencies": {
     "bcrypt": "^5.0.1",
