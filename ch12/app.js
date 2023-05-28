@@ -6,6 +6,8 @@ const session = require('express-session')
 const passport = require('passport')
 const nunjucks = require('nunjucks')
 const dotenv = require('dotenv')
+const sse = require('./sse');
+const webSocket = require('./socket');
 
 dotenv.config();
 const indexRouter = require('./routes/index')
@@ -22,13 +24,13 @@ nunjucks.configure('views', {
     watch : true,
 })
 
-sequelize.sync({ alter : true })
+sequelize.sync({ force : false })
     .then(() => {
-        console.log('Conneted Database')
+        console.log('Connected Database')
     })
     .catch((err) => {
         console.error(err)
-    })
+    });
 
 const sessionMiddleware = session({
     resave: false,
@@ -52,13 +54,11 @@ app.use(passport.session());
 
 app.use('/', indexRouter);
 app.use('/auth', authRouter);
-
 app.use((req, res, next) => {
     const error = new Error(`${req.method} ${req.url} 라우터가 없습니다.`);
     error.status = 404;
     next(error);
 })
-
 app.use((err, req, res, next) => {
     res.locals.message = err.message
     res.locals.status = process.env.NODE_ENV !== 'production' ? err : {};
@@ -66,6 +66,13 @@ app.use((err, req, res, next) => {
     res.render('error');
 })
 
-app.listen(app.get('port'), () => {
-    console.log(app.get('port') + ' listening on');
+const server =app.listen(app.get('port'), () => {
+    console.log(`${app.get('port')} is listening on`);
+})
+
+webSocket(server, app);
+sse(server);
+
+app.use('/health', (req, res) => {
+    res.send("success");
 })

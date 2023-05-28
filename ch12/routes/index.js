@@ -9,12 +9,8 @@ const indexController = require('../controllers/index');
 
 const router = express.Router();
 
-router.use((req, res, next) => {
-    res.locals.user = req.user;
-})
 
 router.get('/', indexController.renderMain);
-console.log(3)
 router.get('/join', isNotLoggedIn, indexController.renderJoin)
 router.get('/good', isLoggedIn, indexController.renderGood);
 

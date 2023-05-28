@@ -4,7 +4,6 @@ const User = require('../models/user');
 
 const join = async (req, res, next) => {
     const { email, nick, password, money } = req.body;
-
     try {
         const user = await User.findOne({
             where :{
@@ -12,9 +11,20 @@ const join = async (req, res, next) => {
             }
         })
 
+        // const hash = await bcrypt.hash(password, 12);
+
+        await User.create({
+            email : email,
+            nick : nick,
+            password : password,
+            money : money,
+        })
+
         if (user) {
-            return res.redirect('/join?error=already_joined')
+            res.redirect('/join?error=already_joined')
         }
+
+        return res.redirect('/');
     } catch (error) {
         console.error(error);
         return next(error);
@@ -27,6 +37,7 @@ const login = async (req, res, next) => {
             console.error(authError);
             return next(authError);
         }
+        console.log(user)
         if (!user) {
             return res.redirect(`/?loginError=${info.message}`);
         }

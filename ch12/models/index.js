@@ -5,8 +5,9 @@ const path = require('path');
 const config = require('../config/config')[env];
 
 const db = {};
+
 const sequelize = new Sequelize(
-    config.database, config.username, config.password, config,
+    config.database, config.username, config.password, {...config, logging : false},
 );
 
 db.sequelize = sequelize;
@@ -19,7 +20,6 @@ fs
     })
     .forEach(file => { // 해당 파일의 모델 불러와서 init
       const model = require(path.join(__dirname, file));
-      console.log(file, model.name);
       db[model.name] = model;
       model.initiate(sequelize);
     });
