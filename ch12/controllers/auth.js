@@ -11,18 +11,17 @@ const join = async (req, res, next) => {
             }
         })
 
-        // const hash = await bcrypt.hash(password, 12);
-
-        await User.create({
-            email : email,
-            nick : nick,
-            password : password,
-            money : money,
-        })
-
         if (user) {
             res.redirect('/join?error=already_joined')
         }
+
+        const hash = await bcrypt.hash(password, 12);
+        await User.create({
+            email : email,
+            nick : nick,
+            password : hash,
+            money : money,
+        })
 
         return res.redirect('/');
     } catch (error) {

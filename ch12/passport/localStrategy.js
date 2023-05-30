@@ -15,8 +15,11 @@ module.exports = () => {
                 }
             });
             if (exUser){
-                // const result = await bcrypt.compare(password, exUser.password);
-                if (exUser.password === password) {
+                const result = await bcrypt.compare(password, exUser.password);
+                console.log("origin pw", exUser.password);
+                console.log("pw", password);
+                if (result) {
+                    console.log(2)
                     done(null, exUser);
                 } else {
                     done(null, false, { message: '비밀번호가 일치하지 않습니다.' });

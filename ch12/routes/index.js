@@ -9,10 +9,17 @@ const indexController = require('../controllers/index');
 
 const router = express.Router();
 
+router.use((req, res, next) => {
+    res.locals.user = req.user;
+    next();
+}) // check
+
 
 router.get('/', indexController.renderMain);
 router.get('/join', isNotLoggedIn, indexController.renderJoin)
-router.get('/good', isLoggedIn, indexController.renderGood);
+router.get('/good', isLoggedIn, indexController.renderGoods);
+router.get('/good/:goodId', indexController.renderGood)
+router.post('/good/:goodId/bid', isLoggedIn, indexController.bidGoods);
 
 try {
     fs.readdirSync('uploads');
